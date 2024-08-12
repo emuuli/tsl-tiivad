@@ -1,11 +1,8 @@
+# PyPi link: https://pypi.org/project/tiivad/
+
 # Setup
 * Use Python 3.10
 * Install requirements from requirements.txt
-
-# Run validation
-```
-
-```
 
 # Running tests:
 ```
