@@ -1,0 +1,7 @@
+FROM tiivadbase1
+
+COPY assessment_code.py /assessment_code.py
+COPY lahendus.py /lahendus.py
+COPY evaluate.sh /evaluate.sh
+
+CMD /evaluate.sh
