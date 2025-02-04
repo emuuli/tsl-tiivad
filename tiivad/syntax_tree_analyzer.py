@@ -37,8 +37,7 @@ class ProgramSyntaxTreeAnalyzer:
 
         self.is_class_tv = isinstance(self.tree, ast.ClassDef)
         self.is_function_tv = self.is_pure_tv = isinstance(self.tree, ast.FunctionDef)
-        self.contains_keyword_names = set(re.findall(r'\w+', ast.unparse(self.tree)))
-
+        self.contains_keyword_names = set(match[1] if match[1] else match[2] for match in re.findall(r'(["\'])([^\1]+?)\1|(\w+)', ast.unparse(self.tree)))
         self.traverse_nodes(self.tree)
 
     def traverse_nodes(self, x):
@@ -104,7 +103,7 @@ class ProgramSyntaxTreeAnalyzer:
     def contains_try_except(self) -> bool:
         return self.contains_try_except_tv
 
-    def contains_keyword(self, name: str = None) -> bool:
+    def contains_word(self, name: str = None) -> bool:
         return len(self.contains_keyword_names) > 0 if name is None \
             else name in self.contains_keyword_names
 
@@ -141,6 +140,11 @@ class ProgramSyntaxTreeAnalyzer:
                 targetset = self.defines_class_names & self.calls_function_names
             case 'calls_class_function':
                 targetset = self.calls_class_function_names
+            case 'defines_subclass':
+                if isinstance(self, ClassSyntaxTreeAnalyzer):
+                    return any(self.defines_subclass(expected) for expected in names)
+                else:
+                    return False  
             case _:
                 return False
         match quantifier:
@@ -163,14 +167,39 @@ class ProgramSyntaxTreeAnalyzer:
 class ClassSyntaxTreeAnalyzer(ProgramSyntaxTreeAnalyzer):
     def __init__(self, program_name, class_name):
         super().__init__(program_name, class_name)
+        self.class_name = class_name
+
+    def defines_subclass(self, parent_class_name):
+        
+        if not self.tree:
+            return False  
+        for node in ast.walk(self.tree):
+            if isinstance(node, ast.ClassDef):
+                if node.name == self.class_name:
+                    base_classes = [getattr(base, 'id', None) for base in node.bases]
+                    return parent_class_name in base_classes
+        return False 
+
 
 
 class FunctionSyntaxTreeAnalyzer(ProgramSyntaxTreeAnalyzer):
     def __init__(self, program_name, function_name):
         super().__init__(program_name, None, function_name)
+        self.function_name = function_name  
+        self.global_vars = set() 
+        self._analyze_global_variables() 
+
+    def _analyze_global_variables(self):
+        if(self.tree == None):
+            return 
+        for node in ast.walk(self.tree):
+            if isinstance(node, ast.FunctionDef) and node.name == self.function_name:
+                for sub_node in ast.walk(node):
+                    if isinstance(sub_node, ast.Global):
+                        self.global_vars.update(sub_node.names) 
 
     def is_pure(self) -> bool:
-        return self.is_pure_tv
+        return not self.global_vars
 
     def contains_return(self) -> bool:
         return self.contains_return_tv

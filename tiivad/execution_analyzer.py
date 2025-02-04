@@ -75,16 +75,13 @@ def extract_numbers(s):
 def extract_strings(text: str, word_list: list) -> list:
     if not word_list:
         return []
-
+    
     occurrences = []
 
-    # Create a pattern that matches any of the strings in the list
-    pattern = '|'.join(re.escape(word) for word in word_list)
-
-    # Use re.finditer to find all occurrences
-    for match in re.finditer(pattern, text):
-        occurrences.append(match.group())
-
+    for word in word_list:
+        pattern = re.escape(word)
+        for match in re.finditer(pattern, text):
+            occurrences.append(match.group())
     return occurrences
 
 

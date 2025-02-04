@@ -16,7 +16,8 @@ STATIC_TESTS_ONE = {
     'function_calls_print_test',
     'function_contains_return_test',
     'function_is_pure_test',
-    'function_is_recursive_test'
+    'function_is_recursive_test',
+
 }
 STATIC_TESTS_MANY = {
     'program_imports_module_test',
@@ -32,7 +33,8 @@ STATIC_TESTS_MANY = {
     'function_imports_module_test',
     'function_defines_function_test',
     'function_calls_function_test',
-    'function_contains_keyword_test'
+    'function_contains_keyword_test',
+    'class_defines_subclass_test',
 }
 EXECUTION_TESTS = {
     'program_execution_test',
@@ -142,7 +144,7 @@ def run_test(check_type, checks, component, kwargs, test_type):
             ta = FunctionSyntaxTreeAnalyzer(kwargs["file_name"], kwargs["function_name"])
         else:
             ta = None
-
+            
         for check in kwargs.get("generic_checks", []) + kwargs.get("contains_checks", []):
             if ta is not None and ta.tree is not None and \
                     (test_type in STATIC_TESTS_ONE and getattr(ta, check_type)() == check['expected_value'] or
