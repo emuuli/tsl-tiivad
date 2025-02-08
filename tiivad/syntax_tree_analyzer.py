@@ -124,14 +124,14 @@ class ProgramSyntaxTreeAnalyzer:
 
     def analyze_with_quantifier(self, target: str, quantifier: str, names: set = set(),
                                 nothing_else: bool = False) -> bool:
-
+        print(target)
         match target:
             case 'imports_module':
                 targetset = self.imports_module_names
             case 'defines_function':
                 targetset = self.defines_function_names
             case 'calls_function':
-                targetset = self.calls_function_names
+                targetset = self.calls_function_names 
             case 'contains_keyword':
                 targetset = self.contains_keyword_names
             case 'defines_class':
@@ -140,11 +140,6 @@ class ProgramSyntaxTreeAnalyzer:
                 targetset = self.defines_class_names & self.calls_function_names
             case 'calls_class_function':
                 targetset = self.calls_class_function_names
-            case 'defines_subclass':
-                if isinstance(self, ClassSyntaxTreeAnalyzer):
-                    return any(self.defines_subclass(expected) for expected in names)
-                else:
-                    return False  
             case _:
                 return False
         match quantifier:
@@ -168,18 +163,16 @@ class ClassSyntaxTreeAnalyzer(ProgramSyntaxTreeAnalyzer):
     def __init__(self, program_name, class_name):
         super().__init__(program_name, class_name)
         self.class_name = class_name
-
-    def defines_subclass(self, parent_class_name):
-        
+        self.calls_function_names = set()
+    def is_subclass(self):
         if not self.tree:
             return False  
         for node in ast.walk(self.tree):
             if isinstance(node, ast.ClassDef):
                 if node.name == self.class_name:
                     base_classes = [getattr(base, 'id', None) for base in node.bases]
-                    return parent_class_name in base_classes
+                    return base_classes[0]
         return False 
-
 
 
 class FunctionSyntaxTreeAnalyzer(ProgramSyntaxTreeAnalyzer):
@@ -200,7 +193,7 @@ class FunctionSyntaxTreeAnalyzer(ProgramSyntaxTreeAnalyzer):
 
     def is_pure(self) -> bool:
         return not self.global_vars
-
+    
     def contains_return(self) -> bool:
         return self.contains_return_tv
 
