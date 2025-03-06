@@ -106,7 +106,7 @@ class IOCapturing:
                 raise
 
     def _record_stdin_data(self, data):
-        captured_output = self.get_last_stdout().strip()  # ✅ Only capture new output
+        captured_output = self.get_last_stdout().strip()
         self.output_numbers_map[self.input_call_index] = captured_output  
         self.input_call_index += 1
         self._stream_events.append(("stdin", data))
