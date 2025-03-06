@@ -38,6 +38,7 @@ STATIC_TESTS_MANY = {
     'class_defines_function_test',
     'class_is_subclass_test',
     'class_is_parentclass_test',
+    'class_contains_keyword_test',
     'mainProgram_calls_function_test',
     'mainProgram_calls_class_test',
     'mainProgram_calls_class_function_test',

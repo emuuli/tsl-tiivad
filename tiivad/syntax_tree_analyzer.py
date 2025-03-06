@@ -128,7 +128,7 @@ class ProgramSyntaxTreeAnalyzer:
     def contains_try_except(self) -> bool:
         return self.contains_try_except_tv
 
-    def contains_word(self, name: str = None) -> bool:
+    def contains_keyword(self, name: str = None) -> bool:
         return len(self.contains_keyword_names) > 0 if name is None \
             else name in self.contains_keyword_names
 
