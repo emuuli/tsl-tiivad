@@ -20,7 +20,7 @@ class ProgramSyntaxTreeAnalyzer:
         self.contains_loop_tv = self.contains_try_except_tv = self.contains_return_tv = False
         self.is_class_tv = self.is_function_tv = self.is_pure_tv = False
         self.parent_classes, self.sub_classes = set(), set()
-        self.calls_class = set()
+        self.calls_class, self.contains_phrases = set(), set()
         self.main_program_statements = [] 
         self.program_name = program_name
         self.actual = None
@@ -53,7 +53,8 @@ class ProgramSyntaxTreeAnalyzer:
 
         self.is_class_tv = isinstance(self.tree, ast.ClassDef)
         self.is_function_tv = self.is_pure_tv = isinstance(self.tree, ast.FunctionDef)
-        self.contains_keyword_names = set(match[1] if match[1] else match[2] for match in re.findall(r'(["\'])([^\1]+?)\1|(\w+)', ast.unparse(self.tree)))
+        self.contains_keyword_names = set(re.findall(r'\w+', ast.unparse(self.tree)))
+        self.contains_phrases = set(match[1] if match[1] else match[2] for match in re.findall(r'(["\'])([^\1]+?)\1|(\w+)', ast.unparse(self.tree)))
         self.traverse_nodes(self.tree)
 
     def raised_exception(self) -> bool:
@@ -131,6 +132,10 @@ class ProgramSyntaxTreeAnalyzer:
     def contains_keyword(self, name: str = None) -> bool:
         return len(self.contains_keyword_names) > 0 if name is None \
             else name in self.contains_keyword_names
+    
+    def contains_phrase(self, name: str = None) -> bool:
+        return len(self.contains_phrases) > 0 if name is None \
+            else name in self.contains_phrases
 
     def calls_function(self, name: str = None) -> bool:
         return len(self.calls_function_names) > 0 if name is None \
@@ -158,6 +163,8 @@ class ProgramSyntaxTreeAnalyzer:
                 targetset = self.calls_function_names 
             case 'contains_keyword':
                 targetset = self.contains_keyword_names
+            case 'contains_phrase':
+                targetset = self.contains_phrases
             case 'defines_class':
                 targetset = self.defines_class_names
             case 'calls_class':

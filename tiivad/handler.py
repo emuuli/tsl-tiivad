@@ -24,6 +24,7 @@ STATIC_TESTS_MANY = {
     'program_defines_function_test',
     'program_calls_function_test',
     'program_contains_keyword_test',
+    'program_contains_phrase_test',
     'program_defines_class_test',
     'program_calls_class_test',
     'program_calls_class_function_test',
@@ -31,6 +32,7 @@ STATIC_TESTS_MANY = {
     'function_defines_function_test',
     'function_calls_function_test',
     'function_contains_keyword_test',
+    'function_contains_phrase_test',
     'function_calls_class_function_test',
     'class_calls_class_function_test',
     'class_calls_function_test',
@@ -39,8 +41,11 @@ STATIC_TESTS_MANY = {
     'class_is_subclass_test',
     'class_is_parentclass_test',
     'class_contains_keyword_test',
+    'class_contains_phrase_test',
     'mainProgram_calls_function_test',
     'mainProgram_calls_class_test',
+    'mainProgram_contains_keyword_test',
+    'mainProgram_contains_phrase_test',
     'mainProgram_calls_class_function_test',
 }
 
