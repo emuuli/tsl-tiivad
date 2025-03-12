@@ -195,7 +195,6 @@ class ProgramExecutionAnalyzer:
             case ValidationType.ALL_OF_THESE:
                 expected_counts = Counter(values)
                 actual_counts = Counter(all_values)
-                print(actual_counts)
                 for expected_value, count in expected_counts.items():
                     match_count = 0
                     for value in all_values:
