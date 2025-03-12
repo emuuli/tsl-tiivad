@@ -1,6 +1,7 @@
 import ast
 import re
 import runpy
+from typing import Counter
 
 from tiivad.capture_io import IOCapturing, OutOfInputsError
 from tiivad.syntax_tree_analyzer import ValidationType
@@ -89,8 +90,9 @@ def extract_numbers(s):
 def extract_strings(text: str, word_list: list) -> list:
     if not word_list:
         return []
+    words = list(dict.fromkeys(word_list)) 
     occurrences = []
-    for word in word_list:
+    for word in words:
         if word.startswith("regex:"):
             pattern = word.replace("regex:", "")
         else:
@@ -188,34 +190,35 @@ class ProgramExecutionAnalyzer:
                 all_values = [content.rstrip()]
             case _:
                 all_values = []
-        all_values = set(all_values)
         self.actually_found = all_values
         match quantifier:
             case ValidationType.ALL_OF_THESE:
-                i = 0
-                if not ordered:
+                expected_counts = Counter(values)
+                actual_counts = Counter(all_values)
+                print(actual_counts)
+                for expected_value, count in expected_counts.items():
+                    match_count = 0
                     for value in all_values:
-                        for expected_value in values:
-                            if isinstance(expected_value, str) and expected_value.startswith("regex:"):
-                                pattern = expected_value[len("regex:"):].strip()
-                                if re.fullmatch(pattern, value):
-                                    i += 1
-                            elif expected_value == value: 
-                                i += 1
-                            if i == len(values):
-                                break
-                else:
-                    for value in all_values:
-                        expected_value = values[i]
                         if isinstance(expected_value, str) and expected_value.startswith("regex:"):
                             pattern = expected_value[len("regex:"):].strip()
                             if re.fullmatch(pattern, value):
-                                i += 1
-                        elif expected_value == value: 
-                            i += 1
-                        if i == len(values):
+                                match_count += 1
+                        elif expected_value == value:
+                            match_count += 1
+                    if match_count < count: 
+                        return False
+                    
+                if ordered:
+                    expected_index = 0
+                    for value in all_values:
+                        if expected_index < len(values) and value == values[expected_index]:
+                            expected_index += 1
+                        if expected_index == len(values):
                             break
-                return i == len(values) and (not nothing_else or len(values) == len(all_values))
+                    if expected_index != len(values):
+                        return False
+                    
+                return not nothing_else or expected_counts == actual_counts
             case ValidationType.ANY_OF_THESE:
 
                 return any(expected_value in all_values or 
