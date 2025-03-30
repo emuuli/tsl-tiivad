@@ -17,6 +17,7 @@ STATIC_TESTS_ONE = {
     'function_contains_return_test',
     'function_is_pure_test',
     'function_is_recursive_test',
+    'mainProgram_contains_loop_test',
 }
 
 STATIC_TESTS_MANY = {
@@ -284,7 +285,7 @@ def run_test(check_type, checks, component, kwargs, test_type):
                 elif i == 3:
                     result = ea.fields_correct(check['fields_final'], check['check_name'], check['check_value'],
                                                check['nothing_else'])
-                    
+                    ea.actual = ea.class_real_fields
                     ea.expected = check['fields_final']
                 else:
                     result = False
