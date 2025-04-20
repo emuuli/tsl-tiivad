@@ -58,6 +58,9 @@ class _OutputListenerStream(_ListenerStream):
 class IOCapturing:
     def __init__(self, inputs=[]):
         self._inputs = inputs
+        self.input_call_index = 0 
+        self.input_output_map = {}
+        self.output_numbers_map = {} 
 
     def __enter__(self):
         self._inputs_iterator = self._create_inputs_iterator(self._inputs)
@@ -78,6 +81,10 @@ class IOCapturing:
 
     def __exit__(self, exc_type, exc_value, traceback):
         self._remaining_inputs = sys.stdin.fetch_remaining_inputs()
+        final_output = self.get_last_stdout().strip()
+
+        if final_output:
+            self.output_numbers_map[self.input_call_index ] = final_output
 
         # restore original streams
         for stream_name in {"stdin", "stdout", "stderr"}:
@@ -99,6 +106,9 @@ class IOCapturing:
                 raise
 
     def _record_stdin_data(self, data):
+        captured_output = self.get_last_stdout().strip()
+        self.output_numbers_map[self.input_call_index] = captured_output  
+        self.input_call_index += 1
         self._stream_events.append(("stdin", data))
 
     def _record_stdout_data(self, data):
@@ -137,7 +147,11 @@ class IOCapturing:
 
     def get_stderr(self):
         return self._get_stream_data({"stderr"}, False)
+    
+    def get_output_map(self):
+        return self.output_numbers_map
 
+    
     def debug(self, *args, sep=' ', end='\n', stream_name="stdout", flush=False):
         """Meant for printing debug information from input generator."""
         print(*args, sep=sep, end=end,
