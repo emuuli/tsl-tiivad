@@ -37,6 +37,7 @@ STATIC_TESTS_MANY = {
     'function_calls_class_function_test',
     'class_calls_class_function_test',
     'class_calls_function_test',
+    'class_calls_class_test',
     'class_imports_module_test',
     'class_defines_function_test',
     'class_is_subclass_test',
