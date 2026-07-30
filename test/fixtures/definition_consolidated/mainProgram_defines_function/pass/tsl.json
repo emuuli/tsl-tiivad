@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "definition_test",
+      "id": 1,
+      "name": "Põhiprogramm defineerib funktsiooni kohalik",
+      "scopeType": "MAIN_PROGRAM",
+      "className": null,
+      "functionName": null,
+      "definitionCheckValue": "kohalik",
+      "superClassName": null,
+      "definitionCheckType": "FUNCTION",
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "kohalik"
+        ],
+        "beforeMessage": "Kontrollin, kas põhiprogramm defineerib funktsiooni `kohalik`.",
+        "passedMessage": "Põhiprogramm defineerib funktsiooni `kohalik`.",
+        "failedMessage": "Põhiprogramm ei defineeri funktsiooni `kohalik`."
+      }
+    }
+  ]
+}

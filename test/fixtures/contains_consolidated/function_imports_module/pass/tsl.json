@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 8,
+      "name": "Funktsioon impordib mooduli os",
+      "scope": "FUNCTION",
+      "containsWhat": "KEYWORD_WITH_PRECEDING_ARG",
+      "containsWhatArg": "import",
+      "functionName": "cwd_path",
+      "className": null,
+      "genericCheck": {
+        "checkType": "ALL_OF_THESE",
+        "expectedValue": [
+          "os"
+        ],
+        "beforeMessage": "Kontrollin, kas funktsioon `cwd_path` impordib mooduli `os`.",
+        "passedMessage": "Funktsioon `cwd_path` impordib mooduli `os`.",
+        "failedMessage": "Funktsioon `cwd_path` ei impordi moodulit `os`."
+      }
+    }
+  ]
+}

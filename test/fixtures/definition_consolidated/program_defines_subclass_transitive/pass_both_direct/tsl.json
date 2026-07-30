@@ -1,0 +1,31 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "definition_test",
+      "id": 1,
+      "name": "Programm defineerib Loom alamklassid Koer ja Kutsikas",
+      "scopeType": "PROGRAM",
+      "className": null,
+      "functionName": null,
+      "definitionCheckValue": "Koer",
+      "superClassName": "Loom",
+      "definitionCheckType": "CLASS",
+      "genericCheck": {
+        "checkType": "ALL_OF_THESE",
+        "expectedValue": [
+          "Koer",
+          "Kutsikas"
+        ],
+        "beforeMessage": "Kontrollin, kas programm defineerib klassi `Loom` alamklassid `Koer` ja `Kutsikas`.",
+        "passedMessage": "Programm defineerib klassi `Loom` alamklassid `Koer` ja `Kutsikas`.",
+        "failedMessage": "Programm ei defineeri klassi `Loom` alamklasse `Koer` ja `Kutsikas`."
+      }
+    }
+  ]
+}

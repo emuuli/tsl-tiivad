@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 2,
+      "name": "Funktsioon sisaldab tervitust",
+      "scope": "FUNCTION",
+      "containsWhat": "PHRASE",
+      "containsWhatArg": null,
+      "functionName": "greet",
+      "className": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "Tere"
+        ],
+        "beforeMessage": "Kontrollin, kas funktsioon `greet` sisaldab sõnet 'Tere'.",
+        "passedMessage": "Funktsioon `greet` sisaldab sõnet 'Tere'.",
+        "failedMessage": "Funktsioon `greet` ei sisalda sõnet 'Tere'."
+      }
+    }
+  ]
+}

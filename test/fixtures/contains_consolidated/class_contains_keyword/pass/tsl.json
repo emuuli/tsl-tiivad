@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 3,
+      "name": "Klass sisaldab meetodit",
+      "scope": "CLASS",
+      "containsWhat": "KEYWORD_NO_ARG",
+      "containsWhatArg": null,
+      "functionName": null,
+      "className": "Counter",
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "def"
+        ],
+        "beforeMessage": "Kontrollin, kas klass `Counter` sisaldab meetodit.",
+        "passedMessage": "Klass `Counter` sisaldab meetodit.",
+        "failedMessage": "Klass `Counter` ei sisalda meetodit."
+      }
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+from tiivad import *
+validate_files(['''student.py'''])
+execute_test(file_name='''student.py''', contains_checks=[{'check_type':'''ALL_OF_THESE''', 'nothing_else':None, 'expected_value':['''try''', '''except'''], 'before_message':'''Kontrollin, kas funktsioon `parse_int` sisaldab try/except-i.''', 'passed_message':'''Funktsioon `parse_int` sisaldab try/except-i.''', 'failed_message':'''Funktsioon `parse_int` ei sisalda try/except-i.''', 'data_category':'''EQUALS''', 'ignore_case':False}], contains_what='''KEYWORD_NO_ARG''', contains_what_arg=None, scope='''function''', scope_class_name=None, scope_function_name='''parse_int''', type='''contains_test''', points_weight=1.0, id=14, name='''Funktsioon sisaldab try/except-i''', inputs=None, passed_next=None, failed_next=None, visible_to_user=True)
+print(Results(None))

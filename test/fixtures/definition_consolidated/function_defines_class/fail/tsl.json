@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "definition_test",
+      "id": 1,
+      "name": "Funktsioon defineerib klassi Kohalik",
+      "scopeType": "FUNCTION",
+      "className": null,
+      "functionName": "valine",
+      "definitionCheckValue": "Kohalik",
+      "superClassName": null,
+      "definitionCheckType": "CLASS",
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "Kohalik"
+        ],
+        "beforeMessage": "Kontrollin, kas funktsioon `valine` defineerib klassi `Kohalik`.",
+        "passedMessage": "Funktsioon `valine` defineerib klassi `Kohalik`.",
+        "failedMessage": "Funktsioon `valine` ei defineeri klassi `Kohalik`."
+      }
+    }
+  ]
+}

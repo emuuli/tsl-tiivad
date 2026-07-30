@@ -1,0 +1,4 @@
+from tiivad import *
+validate_files(['''student.py'''])
+execute_test(file_name='''student.py''', contains_checks=[{'check_type':'''ANY_OF_THESE''', 'nothing_else':None, 'expected_value':['''sisemine'''], 'before_message':'''Kontrollin, kas funktsioon `valine` defineerib funktsiooni `sisemine`.''', 'passed_message':'''Funktsioon `valine` defineerib funktsiooni `sisemine`.''', 'failed_message':'''Funktsioon `valine` ei defineeri funktsiooni `sisemine`.''', 'data_category':'''EQUALS''', 'ignore_case':False}], scope='''function''', definition_check_type='''FUNCTION''', scope_function_name='''valine''', scope_class_name=None, definition_check_value='''sisemine''', super_class_name=None, type='''definition_test''', points_weight=1.0, id=1, name='''Funktsioon defineerib funktsiooni sisemine''', inputs=None, passed_next=None, failed_next=None, visible_to_user=True)
+print(Results(None))

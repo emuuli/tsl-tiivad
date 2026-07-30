@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "definition_test",
+      "id": 1,
+      "name": "Põhiprogramm defineerib klassi Koer",
+      "scopeType": "MAIN_PROGRAM",
+      "className": null,
+      "functionName": null,
+      "definitionCheckValue": "Koer",
+      "superClassName": null,
+      "definitionCheckType": "CLASS",
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "Koer"
+        ],
+        "beforeMessage": "Kontrollin, kas põhiprogramm defineerib klassi `Koer`.",
+        "passedMessage": "Põhiprogramm defineerib klassi `Koer`.",
+        "failedMessage": "Põhiprogramm ei defineeri klassi `Koer`."
+      }
+    }
+  ]
+}

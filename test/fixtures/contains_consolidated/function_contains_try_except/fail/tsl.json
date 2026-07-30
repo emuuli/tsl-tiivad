@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 14,
+      "name": "Funktsioon sisaldab try/except-i",
+      "scope": "FUNCTION",
+      "containsWhat": "KEYWORD_NO_ARG",
+      "containsWhatArg": null,
+      "functionName": "parse_int",
+      "className": null,
+      "genericCheck": {
+        "checkType": "ALL_OF_THESE",
+        "expectedValue": [
+          "try",
+          "except"
+        ],
+        "beforeMessage": "Kontrollin, kas funktsioon `parse_int` sisaldab try/except-i.",
+        "passedMessage": "Funktsioon `parse_int` sisaldab try/except-i.",
+        "failedMessage": "Funktsioon `parse_int` ei sisalda try/except-i."
+      }
+    }
+  ]
+}

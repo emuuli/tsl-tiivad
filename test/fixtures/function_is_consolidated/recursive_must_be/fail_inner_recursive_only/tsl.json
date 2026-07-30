@@ -1,0 +1,23 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "function_is_test",
+      "id": 1,
+      "name": "Funktsioon arvuta on rekursiivne",
+      "functionName": "arvuta",
+      "functionProperty": "RECURSIVE",
+      "propertyCheck": {
+        "mustHaveProperty": true,
+        "beforeMessage": "Kontrollin, kas funktsioon `arvuta` on rekursiivne.",
+        "passedMessage": "Funktsioon `arvuta` on rekursiivne.",
+        "failedMessage": "Funktsioon `arvuta` ei ole rekursiivne."
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 10,
+      "name": "Programm sisaldab tsüklit",
+      "scope": "PROGRAM",
+      "containsWhat": "KEYWORD_NO_ARG",
+      "containsWhatArg": null,
+      "functionName": null,
+      "className": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "for",
+          "while"
+        ],
+        "beforeMessage": "Kontrollin, kas programm sisaldab tsüklit.",
+        "passedMessage": "Programm sisaldab tsüklit.",
+        "failedMessage": "Programm ei sisalda tsüklit."
+      }
+    }
+  ]
+}

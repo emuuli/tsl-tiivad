@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "definition_test",
+      "id": 1,
+      "name": "Klass defineerib funktsiooni haugu",
+      "scopeType": "CLASS",
+      "className": "Koer",
+      "functionName": null,
+      "definitionCheckValue": "haugu",
+      "superClassName": null,
+      "definitionCheckType": "FUNCTION",
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "haugu"
+        ],
+        "beforeMessage": "Kontrollin, kas klass `Koer` defineerib funktsiooni `haugu`.",
+        "passedMessage": "Klass `Koer` defineerib funktsiooni `haugu`.",
+        "failedMessage": "Klass `Koer` ei defineeri funktsiooni `haugu`."
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "definition_test",
+      "id": 1,
+      "name": "Klass defineerib Lind alamklassi Papagoi",
+      "scopeType": "CLASS",
+      "className": "Konteiner",
+      "functionName": null,
+      "definitionCheckValue": "Papagoi",
+      "superClassName": "Lind",
+      "definitionCheckType": "CLASS",
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "Papagoi"
+        ],
+        "beforeMessage": "Kontrollin, kas klass `Konteiner` defineerib klassi `Lind` alamklassi `Papagoi`.",
+        "passedMessage": "Klass `Konteiner` defineerib klassi `Lind` alamklassi `Papagoi`.",
+        "failedMessage": "Klass `Konteiner` ei defineeri klassi `Lind` alamklassi `Papagoi`."
+      }
+    }
+  ]
+}

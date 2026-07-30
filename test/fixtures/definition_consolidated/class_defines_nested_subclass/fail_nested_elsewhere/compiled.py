@@ -1,0 +1,4 @@
+from tiivad import *
+validate_files(['''student.py'''])
+execute_test(file_name='''student.py''', contains_checks=[{'check_type':'''ANY_OF_THESE''', 'nothing_else':None, 'expected_value':['''Papagoi'''], 'before_message':'''Kontrollin, kas klass `Konteiner` defineerib klassi `Lind` alamklassi `Papagoi`.''', 'passed_message':'''Klass `Konteiner` defineerib klassi `Lind` alamklassi `Papagoi`.''', 'failed_message':'''Klass `Konteiner` ei defineeri klassi `Lind` alamklassi `Papagoi`.''', 'data_category':'''EQUALS''', 'ignore_case':False}], scope='''class''', definition_check_type='''CLASS''', scope_function_name=None, scope_class_name='''Konteiner''', definition_check_value='''Papagoi''', super_class_name='''Lind''', type='''definition_test''', points_weight=1.0, id=1, name='''Klass defineerib Lind alamklassi Papagoi''', inputs=None, passed_next=None, failed_next=None, visible_to_user=True)
+print(Results(None))

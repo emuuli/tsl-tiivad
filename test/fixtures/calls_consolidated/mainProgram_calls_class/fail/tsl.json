@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "calls_test",
+      "id": 1,
+      "name": "Põhiprogramm kutsub välja klassi",
+      "scope": "MAIN_PROGRAM",
+      "targetType": "CLASS",
+      "functionName": null,
+      "className": null,
+      "targetClassName": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "Dog"
+        ],
+        "beforeMessage": "Kontrollin, kas põhiprogramm kutsub välja klassi `Dog`.",
+        "passedMessage": "Põhiprogramm kutsub välja klassi `Dog`.",
+        "failedMessage": "Põhiprogramm ei kutsu välja klassi `Dog`."
+      }
+    }
+  ]
+}
