@@ -108,8 +108,6 @@ def execute_test(**kwargs):
         return
 
     test_type = kwargs["type"]
-    component, check_type = test_type.split("_", 1)
-    check_type = check_type[:-len("_test")]
 
     checks = []
     test_exception_message = None
@@ -118,13 +116,26 @@ def execute_test(**kwargs):
     converted_submission = None
 
     try:
-        test_status, actual_output, converted_submission, actual_file_output = run_test(
-            check_type,
-            checks,
-            component,
-            kwargs,
-            test_type
-        )
+        if test_type == "contains_test":
+            test_status, actual_output, converted_submission, actual_file_output = run_contains_test(
+                checks, kwargs
+            )
+        elif test_type == "calls_test":
+            test_status, actual_output, converted_submission, actual_file_output = run_calls_test(
+                checks, kwargs
+            )
+        elif test_type in STATIC_TESTS_ONE | STATIC_TESTS_MANY | EXECUTION_TESTS:
+            component, check_type = test_type.split("_", 1)
+            check_type = check_type[:-len("_test")]
+            test_status, actual_output, converted_submission, actual_file_output = run_test(
+                check_type,
+                checks,
+                component,
+                kwargs,
+                test_type
+            )
+        else:
+            raise ValueError(f"Unknown test type: {test_type!r}")
     except Exception:
         test_status = TestResult.FAIL
         test_exception_message = str(traceback.format_exc())
@@ -301,6 +312,129 @@ def run_test(check_type, checks, component, kwargs, test_type):
                     break
         actual_file_output = ea.all_file_io
     
+
+    return test_status, actual_output, converted_submission, actual_file_output
+
+
+def run_contains_test(checks, kwargs):
+    """Dispatch for the consolidated `contains_test` shape emitted by the new
+    TSL compiler in the `easy` repo. Translates `scope` + `containsWhat` +
+    `genericCheck` into the existing analyzer + `analyze_with_quantifier`
+    machinery, so this is purely a re-skin of the legacy
+    `*_contains_keyword_test` / `*_contains_phrase_test` codepath."""
+    actual_output = None
+    actual_file_output = None
+    converted_submission = None
+    test_status = TestResult.PASS
+
+    scope = kwargs["scope"]
+    if scope == "program":
+        ta = ProgramSyntaxTreeAnalyzer(kwargs["file_name"])
+    elif scope == "class":
+        ta = ClassSyntaxTreeAnalyzer(kwargs["file_name"], kwargs["scope_class_name"])
+    elif scope == "function":
+        ta = FunctionSyntaxTreeAnalyzer(kwargs["file_name"], kwargs["scope_function_name"])
+    elif scope == "main_program":
+        ta = MainProgramSyntaxTreeAnalyzer(kwargs["file_name"])
+    else:
+        raise ValueError(f"Unknown scope for contains_test: {scope!r}")
+
+    contains_what = kwargs["contains_what"]
+    contains_what_arg = kwargs.get("contains_what_arg")
+    if contains_what == "KEYWORD_NO_ARG":
+        target = "contains_keyword_used"
+    elif contains_what == "PHRASE":
+        target = "contains_phrase"
+    elif contains_what == "KEYWORD_WITH_PRECEDING_ARG" and contains_what_arg == "import":
+        target = "imports_module"
+    else:
+        raise ValueError(
+            f"Unsupported contains_what for contains_test: "
+            f"{contains_what!r} (arg={contains_what_arg!r})"
+        )
+
+    for check in kwargs.get("contains_checks", []):
+        ta.expected = check['expected_value']
+        if ta is not None and ta.tree is not None and \
+                ta.analyze_with_quantifier(target, check['check_type'],
+                                           set(check['expected_value']),
+                                           check['nothing_else']):
+            checks.append(check_result(check['before_message'], TestResult.PASS, check['passed_message'],
+                                       ta.__dict__))
+        else:
+            if ta.raised_exception() and "No such file or directory:" in str(ta.exception):
+                test_status = TestResult.FAIL
+                checks.append(check_result("contains_test", test_status, PROGRAM_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+            elif ta.raised_exception() and "Not found" in str(ta.exception) and isinstance(ta, FunctionSyntaxTreeAnalyzer):
+                test_status = TestResult.FAIL
+                checks.append(check_result("contains_test", test_status, FUNCTION_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+            elif ta.raised_exception() and "Not found" in str(ta.exception) and isinstance(ta, ClassSyntaxTreeAnalyzer):
+                test_status = TestResult.FAIL
+                checks.append(check_result("contains_test", test_status, CLASS_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+            else:
+                checks.append(check_result(check['before_message'], TestResult.FAIL, check['failed_message'], ta.__dict__))
+                test_status = TestResult.FAIL
+                break
+
+    return test_status, actual_output, converted_submission, actual_file_output
+
+
+def run_calls_test(checks, kwargs):
+    """Dispatch for the consolidated `calls_test` shape emitted by the new
+    TSL compiler in the `easy` repo. Translates `scope` + `target` +
+    `genericCheck` into the existing analyzer + `analyze_with_quantifier`
+    machinery, so this is purely a re-skin of the 11 legacy
+    `*_calls_function_test` / `*_calls_class_test` / `*_calls_class_function_test`
+    codepaths."""
+    actual_output = None
+    actual_file_output = None
+    converted_submission = None
+    test_status = TestResult.PASS
+
+    scope = kwargs["scope"]
+    if scope == "program":
+        ta = ProgramSyntaxTreeAnalyzer(kwargs["file_name"])
+    elif scope == "class":
+        ta = ClassSyntaxTreeAnalyzer(kwargs["file_name"], kwargs["scope_class_name"])
+    elif scope == "function":
+        ta = FunctionSyntaxTreeAnalyzer(kwargs["file_name"], kwargs["scope_function_name"])
+    elif scope == "main_program":
+        ta = MainProgramSyntaxTreeAnalyzer(kwargs["file_name"])
+    else:
+        raise ValueError(f"Unknown scope for calls_test: {scope!r}")
+
+    calls_what = kwargs["target"]
+    if calls_what == "function":
+        target = "calls_function"
+    elif calls_what == "class":
+        target = "calls_class"
+    elif calls_what == "class_function":
+        target = "calls_class_function"
+    else:
+        raise ValueError(f"Unsupported target for calls_test: {calls_what!r}")
+
+    for check in kwargs.get("contains_checks", []):
+        ta.expected = check['expected_value']
+        if ta is not None and ta.tree is not None and \
+                ta.analyze_with_quantifier(target, check['check_type'],
+                                           set(check['expected_value']),
+                                           check['nothing_else']):
+            checks.append(check_result(check['before_message'], TestResult.PASS, check['passed_message'],
+                                       ta.__dict__))
+        else:
+            if ta.raised_exception() and "No such file or directory:" in str(ta.exception):
+                test_status = TestResult.FAIL
+                checks.append(check_result("calls_test", test_status, PROGRAM_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+            elif ta.raised_exception() and "Not found" in str(ta.exception) and isinstance(ta, FunctionSyntaxTreeAnalyzer):
+                test_status = TestResult.FAIL
+                checks.append(check_result("calls_test", test_status, FUNCTION_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+            elif ta.raised_exception() and "Not found" in str(ta.exception) and isinstance(ta, ClassSyntaxTreeAnalyzer):
+                test_status = TestResult.FAIL
+                checks.append(check_result("calls_test", test_status, CLASS_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+            else:
+                checks.append(check_result(check['before_message'], TestResult.FAIL, check['failed_message'], ta.__dict__))
+                test_status = TestResult.FAIL
+                break
 
     return test_status, actual_output, converted_submission, actual_file_output
 

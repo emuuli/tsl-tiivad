@@ -1,5 +1,40 @@
 import ast
+import keyword
 import re
+
+
+KEYWORD_TO_AST_NODES = {
+    'for':       {'For', 'AsyncFor', 'comprehension'},
+    'while':     {'While'},
+    'if':        {'If', 'IfExp'},
+    'try':       {'Try'},
+    'except':    {'ExceptHandler'},
+    'def':       {'FunctionDef', 'AsyncFunctionDef'},
+    'class':     {'ClassDef'},
+    'return':    {'Return'},
+    'yield':     {'Yield', 'YieldFrom'},
+    'import':    {'Import', 'ImportFrom'},
+    'from':      {'ImportFrom'},
+    'with':      {'With', 'AsyncWith'},
+    'lambda':    {'Lambda'},
+    'pass':      {'Pass'},
+    'break':     {'Break'},
+    'continue':  {'Continue'},
+    'raise':     {'Raise'},
+    'assert':    {'Assert'},
+    'global':    {'Global'},
+    'nonlocal':  {'Nonlocal'},
+    'await':     {'Await'},
+    'del':       {'Delete'},
+    'async':     {'AsyncFor', 'AsyncWith', 'AsyncFunctionDef'},
+}
+
+AST_NODE_TO_KEYWORDS = {}
+for _kw, _nodes in KEYWORD_TO_AST_NODES.items():
+    for _n in _nodes:
+        AST_NODE_TO_KEYWORDS.setdefault(_n, set()).add(_kw)
+
+PYTHON_KEYWORDS = set(keyword.kwlist)
 
 
 class ValidationType:
@@ -17,6 +52,7 @@ class ProgramSyntaxTreeAnalyzer:
         self.defines_class_names, self.defines_subclass_names = set(), set()
         self.calls_function_names, self.calls_class_function_names = set(), set()
         self.contains_keyword_names, self.defined_vars = set(), set()
+        self.contains_keyword_ast_names, self.contains_keyword_used = set(), set()
         self.contains_loop_tv = self.contains_try_except_tv = self.contains_return_tv = False
         self.is_class_tv = self.is_function_tv = self.is_pure_tv = False
         self.parent_classes, self.sub_classes = set(), set()
@@ -56,6 +92,13 @@ class ProgramSyntaxTreeAnalyzer:
         self.contains_keyword_names = set(re.findall(r'\w+', ast.unparse(self.tree)))
         self.contains_phrases = set(match[1] if match[1] else match[2] for match in re.findall(r'(["\'])([^\1]+?)\1|(\w+)', ast.unparse(self.tree)))
         self.traverse_nodes(self.tree)
+        for kw in PYTHON_KEYWORDS:
+            if kw in KEYWORD_TO_AST_NODES:
+                if kw in self.contains_keyword_ast_names:
+                    self.contains_keyword_used.add(kw)
+            else:
+                if kw in self.contains_keyword_names:
+                    self.contains_keyword_used.add(kw)
 
     def raised_exception(self) -> bool:
             return self.exception is not None
@@ -102,6 +145,8 @@ class ProgramSyntaxTreeAnalyzer:
                 self.is_pure_tv = False
         elif node_type == 'Return':
             self.contains_return_tv = True
+        if node_type in AST_NODE_TO_KEYWORDS:
+            self.contains_keyword_ast_names |= AST_NODE_TO_KEYWORDS[node_type]
         for y in ast.iter_child_nodes(x):
             self.traverse_nodes(y)
 
@@ -177,6 +222,8 @@ class ProgramSyntaxTreeAnalyzer:
                 targetset = self.defines_class_names & self.calls_function_names
             case 'calls_class_function':
                 targetset = self.calls_class_function_names
+            case 'contains_keyword_used':
+                targetset = self.contains_keyword_used
             case _:
                 return False
         self.actual = targetset
