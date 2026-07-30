@@ -128,6 +128,10 @@ def execute_test(**kwargs):
             test_status, actual_output, converted_submission, actual_file_output = run_definition_test(
                 checks, kwargs
             )
+        elif test_type == "function_is_test":
+            test_status, actual_output, converted_submission, actual_file_output = run_function_is_test(
+                checks, kwargs
+            )
         elif test_type in STATIC_TESTS_ONE | STATIC_TESTS_MANY | EXECUTION_TESTS:
             component, check_type = test_type.split("_", 1)
             check_type = check_type[:-len("_test")]
@@ -520,6 +524,89 @@ def run_definition_test(checks, kwargs):
                 checks.append(check_result(check['before_message'], TestResult.FAIL, check['failed_message'], ta.__dict__))
                 test_status = TestResult.FAIL
                 break
+
+    return test_status, actual_output, converted_submission, actual_file_output
+
+
+def run_function_is_test(checks, kwargs):
+    """Dispatch for the consolidated `function_is_test` shape emitted by the new
+    TSL compiler in the `easy` repo. Replaces the two legacy test types
+    `function_is_pure_test` and `function_is_recursive_test`; `function_property`
+    selects which analyzer predicate to ask, and the single check carries the
+    polarity plus the three messages.
+
+    Unlike contains/calls/definition this one compares a plain boolean rather
+    than running `analyze_with_quantifier`: `is_pure()` / `is_recursive()` return
+    a bool, not a set, so there is nothing for a quantifier to quantify over.
+    That is also why the compiler emits `expected_value` as a real `True`/`False`
+    here instead of the usual list of strings.
+
+    Known analyzer limitations this handler deliberately does NOT paper over,
+    because they are shared with the legacy code paths and belong to
+    `syntax_tree_analyzer`, not here (see CONSOLIDATED_DISPATCH.md):
+      - a local variable that shadows a module-level name counts as "global",
+      - so does a module-level name used as a parameter default,
+      - module-level names bound by tuple unpacking, `for` targets or `+=`
+        are not seen at all, so reading them still counts as "pure",
+      - mutual recursion (a -> b -> a) does not count as recursive.
+    """
+    actual_output = None
+    actual_file_output = None
+    converted_submission = None
+    test_status = TestResult.PASS
+
+    ta = FunctionSyntaxTreeAnalyzer(kwargs["file_name"], kwargs["function_name"])
+
+    function_property = kwargs["function_property"]
+    if function_property == "PURE":
+        predicate = "is_pure"
+    elif function_property == "RECURSIVE":
+        predicate = "is_recursive"
+    else:
+        raise ValueError(
+            f"Unsupported function_property for function_is_test: {function_property!r}"
+        )
+
+    generic_checks = kwargs.get("generic_checks", [])
+    if not generic_checks:
+        # A test with nothing to check silently passes for everyone, which is
+        # how this test type was broken before consolidation carried the check
+        # over. Fail loudly instead: this can only be an authoring or compiler
+        # bug, never a student mistake.
+        raise ValueError(
+            "function_is_test arrived without any check; it would pass "
+            "unconditionally. Expected generic_checks with an 'expected_value'."
+        )
+
+    for check in generic_checks:
+        ta.expected = check['expected_value']
+
+        # The missing-definition case has to be handled *before* the predicate
+        # is called, unlike in the other consolidated handlers which ask first
+        # and inspect the exception afterwards. FunctionSyntaxTreeAnalyzer
+        # returns early from __init__ when the function is not found, so
+        # `global_vars` is never assigned and `is_pure()` raises AttributeError.
+        # `is_recursive()` is the more dangerous one: it quietly returns False,
+        # which would award a PASS to a student who never wrote the function at
+        # all whenever the check asks for `mustHaveProperty: false`.
+        if ta.raised_exception():
+            test_status = TestResult.FAIL
+            if "No such file or directory:" in str(ta.exception):
+                message = PROGRAM_NOT_DEFINED_ERROR_MSG
+            else:
+                message = FUNCTION_NOT_DEFINED_ERROR_MSG
+            checks.append(check_result("function_is_test", test_status, message, ta.__dict__))
+            break
+
+        ta.actual = getattr(ta, predicate)()
+        if ta.actual == ta.expected:
+            checks.append(check_result(check['before_message'], TestResult.PASS, check['passed_message'],
+                                       ta.__dict__))
+        else:
+            checks.append(check_result(check['before_message'], TestResult.FAIL, check['failed_message'],
+                                       ta.__dict__))
+            test_status = TestResult.FAIL
+            break
 
     return test_status, actual_output, converted_submission, actual_file_output
 
