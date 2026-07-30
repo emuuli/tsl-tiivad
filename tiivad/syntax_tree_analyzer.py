@@ -78,12 +78,57 @@ class ProgramSyntaxTreeAnalyzer:
                 self.treeWhole = None
                 self.tree = None
                 self.exception = e
-    	        
-        if isMain:
-             self.extract_main_program()
-             for node in ast.walk(self.treeWhole):
+
+        # Every class name defined anywhere in the file, regardless of the scope
+        # this analyzer is narrowed to. Deliberately separate from
+        # defines_class_names, because the two answer different questions:
+        #   defines_class_names -> "which classes does THIS scope define?"
+        #                          (must stay narrow; drives definition_test)
+        #   all_class_names     -> "which names in this file are classes?"
+        #                          (must be whole-file; only used to tell a
+        #                           class instantiation apart from a plain
+        #                           function call, since `Auto()` and `arvuta()`
+        #                           are the same ast.Call shape)
+        # Populated before traverse_nodes so calls_class does not depend on
+        # whether the ClassDef happens to be visited before the call site.
+        self.all_class_names = set()
+        if self.treeWhole is not None:
+            for node in ast.walk(self.treeWhole):
                 if isinstance(node, ast.ClassDef):
-                    self.defines_class_names.add(node.name)
+                    self.all_class_names.add(node.name)
+
+        if isMain:
+            self.extract_main_program()
+            # NB: do NOT re-populate defines_class_names from treeWhole here.
+            #
+            # Commit e11de31 ("uuendused", 2025-03-06) added exactly that loop:
+            #     for node in ast.walk(self.treeWhole):
+            #         if isinstance(node, ast.ClassDef):
+            #             self.defines_class_names.add(node.name)
+            # It was NOT meant to widen the main-program scope. The same commit
+            # introduced calls_class, whose Call branch originally read
+            #     if x.func.id in self.defines_class_names
+            # and extract_main_program had just stripped every top-level
+            # ClassDef out of self.tree, so that set would have been empty and
+            # `Auto()` unrecognisable as an instantiation. The loop was a prop
+            # for calls_class; widening defines_class_names was collateral.
+            #
+            # That prop is gone: calls_class now reads all_class_names (built
+            # above from treeWhole for precisely this purpose), so the loop had
+            # no remaining job. Keeping it caused two contradictory bugs:
+            #   - mainProgram + CLASS reported classes defined at module level
+            #     as "defined by the main program" (false positive), making
+            #     MAIN_PROGRAM scope indistinguishable from PROGRAM scope;
+            #   - mainProgram + CLASS + superClassName said the opposite on the
+            #     very same file, because defines_subclass_names was never
+            #     pre-populated and stayed correctly narrow.
+            #
+            # Both scopes now answer from the main-program body alone.
+            #
+            # Side note: creates_instance() (defines_class_names &
+            # calls_function_names) is now empty in main-program scope. It is
+            # unreachable - no test type dispatches to it - but if it is ever
+            # revived it should read all_class_names, exactly like calls_class.
         else:
             for node_type, name in [(ast.ClassDef, class_name), (ast.FunctionDef, function_name)]:
                 if self.tree is not None and name is not None:
@@ -135,7 +180,7 @@ class ProgramSyntaxTreeAnalyzer:
             if isinstance(x.func, ast.Name):
                 self.calls_function_names.add(x.func.id)
                 self.defined_vars.add(x.func.id)
-                if x.func.id in self.defines_class_names:
+                if x.func.id in self.all_class_names:
                     self.calls_class.add(x.func.id)
             elif isinstance(x.func, ast.Attribute):
                 self.calls_function_names.add(x.func.attr)
@@ -258,7 +303,22 @@ class ClassSyntaxTreeAnalyzer(ProgramSyntaxTreeAnalyzer):
         self.class_name = class_name
         if self.exception is not None:
             return
-        self.calls_function_names = set()
+        # NB: do NOT reset calls_function_names here.
+        #
+        # Commit ead7160 ("fixes", 2025-02-08) inserted
+        #     self.calls_function_names = set()
+        # on this line as collateral damage while renaming
+        # defines_subclass -> is_subclass. The same commit also left a stray
+        # print(target) behind, so it was not a deliberate design choice.
+        #
+        # The effect was that a class could never be seen calling ANY function:
+        # super().__init__() collects the calls, and this line threw them away
+        # immediately afterwards. class_calls_function_test was therefore
+        # unconditionally FAIL, and creates_instance (defines_class_names &
+        # calls_function_names) was unconditionally empty in class scope.
+        #
+        # Method calls remain distinguishable via calls_class_function_names,
+        # which traverse_nodes fills separately for ast.Attribute calls.
         self.get_parentClasses(class_name)
         self.get_subClasses(class_name)
 

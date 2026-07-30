@@ -6,10 +6,8 @@
 
 # Running tests:
 ```
-# All tests
-python -m pytest
-# For one file
-python -m pytest test/test_file.py
+python test\test_all.py              # kõik, paralleelselt
+python test\test_all.py -k calls     # filtreeri nime järgi
 ```
 
 # Packaging:

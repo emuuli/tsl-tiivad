@@ -372,13 +372,13 @@ def run_contains_test(checks, kwargs):
         else:
             if ta.raised_exception() and "No such file or directory:" in str(ta.exception):
                 test_status = TestResult.FAIL
-                checks.append(check_result("contains_test", test_status, PROGRAM_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+                checks.append(check_result(check['before_message'], test_status, PROGRAM_NOT_DEFINED_ERROR_MSG, ta.__dict__))
             elif ta.raised_exception() and "Not found" in str(ta.exception) and isinstance(ta, FunctionSyntaxTreeAnalyzer):
                 test_status = TestResult.FAIL
-                checks.append(check_result("contains_test", test_status, FUNCTION_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+                checks.append(check_result(check['before_message'], test_status, FUNCTION_NOT_DEFINED_ERROR_MSG, ta.__dict__))
             elif ta.raised_exception() and "Not found" in str(ta.exception) and isinstance(ta, ClassSyntaxTreeAnalyzer):
                 test_status = TestResult.FAIL
-                checks.append(check_result("contains_test", test_status, CLASS_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+                checks.append(check_result(check['before_message'], test_status, CLASS_NOT_DEFINED_ERROR_MSG, ta.__dict__))
             else:
                 checks.append(check_result(check['before_message'], TestResult.FAIL, check['failed_message'], ta.__dict__))
                 test_status = TestResult.FAIL
@@ -432,13 +432,13 @@ def run_calls_test(checks, kwargs):
         else:
             if ta.raised_exception() and "No such file or directory:" in str(ta.exception):
                 test_status = TestResult.FAIL
-                checks.append(check_result("calls_test", test_status, PROGRAM_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+                checks.append(check_result(check['before_message'], test_status, PROGRAM_NOT_DEFINED_ERROR_MSG, ta.__dict__))
             elif ta.raised_exception() and "Not found" in str(ta.exception) and isinstance(ta, FunctionSyntaxTreeAnalyzer):
                 test_status = TestResult.FAIL
-                checks.append(check_result("calls_test", test_status, FUNCTION_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+                checks.append(check_result(check['before_message'], test_status, FUNCTION_NOT_DEFINED_ERROR_MSG, ta.__dict__))
             elif ta.raised_exception() and "Not found" in str(ta.exception) and isinstance(ta, ClassSyntaxTreeAnalyzer):
                 test_status = TestResult.FAIL
-                checks.append(check_result("calls_test", test_status, CLASS_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+                checks.append(check_result(check['before_message'], test_status, CLASS_NOT_DEFINED_ERROR_MSG, ta.__dict__))
             else:
                 checks.append(check_result(check['before_message'], TestResult.FAIL, check['failed_message'], ta.__dict__))
                 test_status = TestResult.FAIL
@@ -513,13 +513,13 @@ def run_definition_test(checks, kwargs):
         else:
             if ta.raised_exception() and "No such file or directory:" in str(ta.exception):
                 test_status = TestResult.FAIL
-                checks.append(check_result("definition_test", test_status, PROGRAM_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+                checks.append(check_result(check['before_message'], test_status, PROGRAM_NOT_DEFINED_ERROR_MSG, ta.__dict__))
             elif ta.raised_exception() and "Not found" in str(ta.exception) and isinstance(ta, FunctionSyntaxTreeAnalyzer):
                 test_status = TestResult.FAIL
-                checks.append(check_result("definition_test", test_status, FUNCTION_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+                checks.append(check_result(check['before_message'], test_status, FUNCTION_NOT_DEFINED_ERROR_MSG, ta.__dict__))
             elif ta.raised_exception() and "Not found" in str(ta.exception) and isinstance(ta, ClassSyntaxTreeAnalyzer):
                 test_status = TestResult.FAIL
-                checks.append(check_result("definition_test", test_status, CLASS_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+                checks.append(check_result(check['before_message'], test_status, CLASS_NOT_DEFINED_ERROR_MSG, ta.__dict__))
             else:
                 checks.append(check_result(check['before_message'], TestResult.FAIL, check['failed_message'], ta.__dict__))
                 test_status = TestResult.FAIL
@@ -595,7 +595,7 @@ def run_function_is_test(checks, kwargs):
                 message = PROGRAM_NOT_DEFINED_ERROR_MSG
             else:
                 message = FUNCTION_NOT_DEFINED_ERROR_MSG
-            checks.append(check_result("function_is_test", test_status, message, ta.__dict__))
+            checks.append(check_result(check['before_message'], test_status, message, ta.__dict__))
             break
 
         ta.actual = getattr(ta, predicate)()
