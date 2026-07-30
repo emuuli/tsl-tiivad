@@ -50,6 +50,12 @@ class ProgramSyntaxTreeAnalyzer:
 
         self.imports_module_names, self.defines_function_names = set(), set()
         self.defines_class_names, self.defines_subclass_names = set(), set()
+        # Filled by the caller (handler.run_definition_test) when a
+        # definition_test carries super_class_name: the subset of classes in
+        # scope that inherit from that one specific parent. Held as a plain
+        # attribute so analyze_with_quantifier can expose it like any other
+        # target set, instead of the quantifier logic being duplicated there.
+        self.defines_subclass_of = set()
         self.calls_function_names, self.calls_class_function_names = set(), set()
         self.contains_keyword_names, self.defined_vars = set(), set()
         self.contains_keyword_ast_names, self.contains_keyword_used = set(), set()
@@ -212,6 +218,8 @@ class ProgramSyntaxTreeAnalyzer:
                 targetset = self.contains_phrases
             case 'defines_class':
                 targetset = self.defines_class_names
+            case 'defines_subclass':
+                targetset = self.defines_subclass_of
             case 'calls_class':
                 targetset = self.calls_class
             case 'is_subclass':

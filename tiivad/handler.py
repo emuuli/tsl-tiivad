@@ -124,6 +124,10 @@ def execute_test(**kwargs):
             test_status, actual_output, converted_submission, actual_file_output = run_calls_test(
                 checks, kwargs
             )
+        elif test_type == "definition_test":
+            test_status, actual_output, converted_submission, actual_file_output = run_definition_test(
+                checks, kwargs
+            )
         elif test_type in STATIC_TESTS_ONE | STATIC_TESTS_MANY | EXECUTION_TESTS:
             component, check_type = test_type.split("_", 1)
             check_type = check_type[:-len("_test")]
@@ -431,6 +435,87 @@ def run_calls_test(checks, kwargs):
             elif ta.raised_exception() and "Not found" in str(ta.exception) and isinstance(ta, ClassSyntaxTreeAnalyzer):
                 test_status = TestResult.FAIL
                 checks.append(check_result("calls_test", test_status, CLASS_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+            else:
+                checks.append(check_result(check['before_message'], TestResult.FAIL, check['failed_message'], ta.__dict__))
+                test_status = TestResult.FAIL
+                break
+
+    return test_status, actual_output, converted_submission, actual_file_output
+
+
+def run_definition_test(checks, kwargs):
+    """Dispatch for the consolidated `definition_test` shape emitted by the new
+    TSL compiler in the `easy` repo. Translates `scope` + `definition_check_type`
+    + optional `super_class_name` + `genericCheck` into the existing analyzer +
+    `analyze_with_quantifier` machinery, so this is purely a re-skin of the 4
+    legacy `*_defines_function_test` / `*_defines_class_test` codepaths, plus
+    `class_is_subclass_test` (now expressed as a `super_class_name` field rather
+    than a test type of its own)."""
+    actual_output = None
+    actual_file_output = None
+    converted_submission = None
+    test_status = TestResult.PASS
+
+    scope = kwargs["scope"]
+    if scope == "program":
+        ta = ProgramSyntaxTreeAnalyzer(kwargs["file_name"])
+    elif scope == "class":
+        ta = ClassSyntaxTreeAnalyzer(kwargs["file_name"], kwargs["scope_class_name"])
+    elif scope == "function":
+        ta = FunctionSyntaxTreeAnalyzer(kwargs["file_name"], kwargs["scope_function_name"])
+    elif scope == "main_program":
+        ta = MainProgramSyntaxTreeAnalyzer(kwargs["file_name"])
+    else:
+        raise ValueError(f"Unknown scope for definition_test: {scope!r}")
+
+    # Careful: the compiler emits this one as the enum NAME, so it arrives
+    # upper-case ("FUNCTION"/"CLASS"), whereas `scope` above arrives lower-case
+    # because Scope carries an explicit `value`. Same call, two conventions.
+    defines_what = kwargs["definition_check_type"]
+    super_class_name = kwargs.get("super_class_name")
+
+    if defines_what == "FUNCTION":
+        if super_class_name:
+            raise ValueError(
+                "super_class_name is only meaningful for definition_check_type=CLASS"
+            )
+        target = "defines_function"
+    elif defines_what == "CLASS":
+        if super_class_name:
+            # defines_subclass_names holds (child, parent) pairs; narrow it to
+            # the children of this one parent so the quantifier sees a plain
+            # set of class names like every other target.
+            ta.defines_subclass_of = {
+                child
+                for child, parent in ta.defines_subclass_names
+                if parent == super_class_name
+            }
+            target = "defines_subclass"
+        else:
+            target = "defines_class"
+    else:
+        raise ValueError(
+            f"Unsupported definition_check_type for definition_test: {defines_what!r}"
+        )
+
+    for check in kwargs.get("contains_checks", []):
+        ta.expected = check['expected_value']
+        if ta is not None and ta.tree is not None and \
+                ta.analyze_with_quantifier(target, check['check_type'],
+                                           set(check['expected_value']),
+                                           check['nothing_else']):
+            checks.append(check_result(check['before_message'], TestResult.PASS, check['passed_message'],
+                                       ta.__dict__))
+        else:
+            if ta.raised_exception() and "No such file or directory:" in str(ta.exception):
+                test_status = TestResult.FAIL
+                checks.append(check_result("definition_test", test_status, PROGRAM_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+            elif ta.raised_exception() and "Not found" in str(ta.exception) and isinstance(ta, FunctionSyntaxTreeAnalyzer):
+                test_status = TestResult.FAIL
+                checks.append(check_result("definition_test", test_status, FUNCTION_NOT_DEFINED_ERROR_MSG, ta.__dict__))
+            elif ta.raised_exception() and "Not found" in str(ta.exception) and isinstance(ta, ClassSyntaxTreeAnalyzer):
+                test_status = TestResult.FAIL
+                checks.append(check_result("definition_test", test_status, CLASS_NOT_DEFINED_ERROR_MSG, ta.__dict__))
             else:
                 checks.append(check_result(check['before_message'], TestResult.FAIL, check['failed_message'], ta.__dict__))
                 test_status = TestResult.FAIL
