@@ -1,0 +1,23 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "function_is_test",
+      "id": 1,
+      "name": "Funktsioon arvuta kasutab globaalset muutujat",
+      "functionName": "arvuta",
+      "functionProperty": "PURE",
+      "propertyCheck": {
+        "mustHaveProperty": false,
+        "beforeMessage": "Kontrollin, kas funktsioon `arvuta` kasutab globaalset muutujat.",
+        "passedMessage": "Funktsioon `arvuta` kasutab globaalset muutujat, nagu ülesandes nõutud.",
+        "failedMessage": "Funktsioon `arvuta` kasutab vaid lokaalseid muutujaid."
+      }
+    }
+  ]
+}

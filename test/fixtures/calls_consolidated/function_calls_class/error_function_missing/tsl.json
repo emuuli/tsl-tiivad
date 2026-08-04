@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "calls_test",
+      "id": 1,
+      "name": "Funktsioon kutsub välja klassi",
+      "scope": "FUNCTION",
+      "targetType": "CLASS",
+      "functionName": "loo_auto",
+      "className": null,
+      "targetClassName": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "Auto"
+        ],
+        "beforeMessage": "Kontrollin, kas funktsioon `loo_auto` kutsub välja klassi `Auto`.",
+        "passedMessage": "Funktsioon `loo_auto` kutsub välja klassi `Auto`.",
+        "failedMessage": "Funktsioon `loo_auto` ei kutsu välja klassi `Auto`."
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "calls_test",
+      "id": 1,
+      "name": "Põhiprogramm kutsub välja funktsiooni",
+      "scope": "MAIN_PROGRAM",
+      "targetType": "FUNCTION",
+      "functionName": null,
+      "className": null,
+      "targetClassName": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "helper"
+        ],
+        "beforeMessage": "Kontrollin, kas põhiprogramm kutsub välja funktsiooni `helper`.",
+        "passedMessage": "Põhiprogramm kutsub välja funktsiooni `helper`.",
+        "failedMessage": "Põhiprogramm ei kutsu välja funktsiooni `helper`."
+      }
+    }
+  ]
+}

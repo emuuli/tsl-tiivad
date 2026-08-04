@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "calls_test",
+      "id": 1,
+      "name": "Klass kutsub välja funktsiooni",
+      "scope": "CLASS",
+      "targetType": "FUNCTION",
+      "functionName": null,
+      "className": "Owner",
+      "targetClassName": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "util"
+        ],
+        "beforeMessage": "Kontrollin, kas klass `Owner` kutsub välja funktsiooni `util`.",
+        "passedMessage": "Klass `Owner` kutsub välja funktsiooni `util`.",
+        "failedMessage": "Klass `Owner` ei kutsu välja funktsiooni `util`."
+      }
+    }
+  ]
+}

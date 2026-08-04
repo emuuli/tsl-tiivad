@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "definition_test",
+      "id": 1,
+      "name": "Funktsioon defineerib funktsiooni sisemine",
+      "scopeType": "FUNCTION",
+      "className": null,
+      "functionName": "valine",
+      "definitionCheckValue": "sisemine",
+      "superClassName": null,
+      "definitionCheckType": "FUNCTION",
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "sisemine"
+        ],
+        "beforeMessage": "Kontrollin, kas funktsioon `valine` defineerib funktsiooni `sisemine`.",
+        "passedMessage": "Funktsioon `valine` defineerib funktsiooni `sisemine`.",
+        "failedMessage": "Funktsioon `valine` ei defineeri funktsiooni `sisemine`."
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "calls_test",
+      "id": 1,
+      "name": "Klass kutsub välja klassi funktsiooni",
+      "scope": "CLASS",
+      "targetType": "CLASS_FUNCTION",
+      "functionName": null,
+      "className": "Owner",
+      "targetClassName": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "bark"
+        ],
+        "beforeMessage": "Kontrollin, kas klass `Owner` kutsub välja klassi funktsiooni `bark`.",
+        "passedMessage": "Klass `Owner` kutsub välja klassi funktsiooni `bark`.",
+        "failedMessage": "Klass `Owner` ei kutsu välja klassi funktsiooni `bark`."
+      }
+    }
+  ]
+}

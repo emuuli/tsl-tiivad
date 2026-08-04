@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 16,
+      "name": "Programm impordib ainult math-i",
+      "scope": "PROGRAM",
+      "containsWhat": "KEYWORD_WITH_PRECEDING_ARG",
+      "containsWhatArg": "import",
+      "functionName": null,
+      "className": null,
+      "genericCheck": {
+        "checkType": "ALL_OF_THESE",
+        "expectedValue": [
+          "math"
+        ],
+        "beforeMessage": "Kontrollin, kas programm impordib ainult mooduli `math` ja midagi muud.",
+        "passedMessage": "Programm impordib ainult mooduli `math`.",
+        "failedMessage": "Programm impordib lisaks `math`-le ka muid mooduleid.",
+        "nothingElse": true
+      }
+    }
+  ]
+}

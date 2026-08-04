@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "definition_test",
+      "id": 1,
+      "name": "Klass defineerib klassi Kutsikas",
+      "scopeType": "CLASS",
+      "className": "Koer",
+      "functionName": null,
+      "definitionCheckValue": "Kutsikas",
+      "superClassName": null,
+      "definitionCheckType": "CLASS",
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "Kutsikas"
+        ],
+        "beforeMessage": "Kontrollin, kas klass `Koer` defineerib klassi `Kutsikas`.",
+        "passedMessage": "Klass `Koer` defineerib klassi `Kutsikas`.",
+        "failedMessage": "Klass `Koer` ei defineeri klassi `Kutsikas`."
+      }
+    }
+  ]
+}

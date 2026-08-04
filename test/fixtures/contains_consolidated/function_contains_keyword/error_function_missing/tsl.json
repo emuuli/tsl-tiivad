@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 1,
+      "name": "Funktsioon sisaldab if-i",
+      "scope": "FUNCTION",
+      "containsWhat": "KEYWORD_NO_ARG",
+      "containsWhatArg": null,
+      "functionName": "classify",
+      "className": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "if"
+        ],
+        "beforeMessage": "Kontrollin, kas funktsioon `classify` kasutab if-lauset.",
+        "passedMessage": "Funktsioon `classify` kasutab if-lauset.",
+        "failedMessage": "Funktsioon `classify` ei kasuta if-lauset."
+      }
+    }
+  ]
+}

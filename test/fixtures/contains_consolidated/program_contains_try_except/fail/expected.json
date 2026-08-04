@@ -1,0 +1,26 @@
+{
+  "producer": "<producer>",
+  "result_type": "OK_V3",
+  "finished_at": "<finished_at>",
+  "pre_evaluate_error": null,
+  "points": 0,
+  "tests": [
+    {
+      "title": "Programm sisaldab try/except-i",
+      "user_inputs": [],
+      "created_files": [],
+      "converted_submission": null,
+      "actual_output": null,
+      "actual_file_output": null,
+      "exception_message": null,
+      "status": "FAIL",
+      "checks": [
+        {
+          "title": "Kontrollin, kas programm sisaldab try/except-i.",
+          "status": "FAIL",
+          "feedback": "Programm ei sisalda try/except-i."
+        }
+      ]
+    }
+  ]
+}

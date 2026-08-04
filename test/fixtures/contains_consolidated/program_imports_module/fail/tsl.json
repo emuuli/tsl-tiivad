@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 7,
+      "name": "Programm impordib mooduli math",
+      "scope": "PROGRAM",
+      "containsWhat": "KEYWORD_WITH_PRECEDING_ARG",
+      "containsWhatArg": "import",
+      "functionName": null,
+      "className": null,
+      "genericCheck": {
+        "checkType": "ALL_OF_THESE",
+        "expectedValue": [
+          "math"
+        ],
+        "beforeMessage": "Kontrollin, kas programm impordib mooduli `math`.",
+        "passedMessage": "Programm impordib mooduli `math`.",
+        "failedMessage": "Programm ei impordi moodulit `math`."
+      }
+    }
+  ]
+}

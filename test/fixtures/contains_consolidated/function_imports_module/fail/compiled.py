@@ -1,0 +1,4 @@
+from tiivad import *
+validate_files(['''student.py'''])
+execute_test(file_name='''student.py''', contains_checks=[{'check_type':'''ALL_OF_THESE''', 'nothing_else':None, 'expected_value':['''os'''], 'before_message':'''Kontrollin, kas funktsioon `cwd_path` impordib mooduli `os`.''', 'passed_message':'''Funktsioon `cwd_path` impordib mooduli `os`.''', 'failed_message':'''Funktsioon `cwd_path` ei impordi moodulit `os`.''', 'data_category':'''EQUALS''', 'ignore_case':False}], contains_what='''KEYWORD_WITH_PRECEDING_ARG''', contains_what_arg='''import''', scope='''function''', scope_class_name=None, scope_function_name='''cwd_path''', type='''contains_test''', points_weight=1.0, id=8, name='''Funktsioon impordib mooduli os''', inputs=None, passed_next=None, failed_next=None, visible_to_user=True)
+print(Results(None))

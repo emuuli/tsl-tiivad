@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "definition_test",
+      "id": 1,
+      "name": "Programm defineerib funktsiooni arvuta",
+      "scopeType": "PROGRAM",
+      "className": null,
+      "functionName": null,
+      "definitionCheckValue": "arvuta",
+      "superClassName": null,
+      "definitionCheckType": "FUNCTION",
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "arvuta"
+        ],
+        "beforeMessage": "Kontrollin, kas programm defineerib funktsiooni `arvuta`.",
+        "passedMessage": "Programm defineerib funktsiooni `arvuta`.",
+        "failedMessage": "Programm ei defineeri funktsiooni `arvuta`."
+      }
+    }
+  ]
+}

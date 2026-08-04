@@ -1,0 +1,4 @@
+from tiivad import *
+validate_files(['''student.py'''])
+execute_test(file_name='''student.py''', contains_checks=[{'check_type':'''ANY_OF_THESE''', 'nothing_else':None, 'expected_value':['''kohalik'''], 'before_message':'''Kontrollin, kas põhiprogramm defineerib funktsiooni `kohalik`.''', 'passed_message':'''Põhiprogramm defineerib funktsiooni `kohalik`.''', 'failed_message':'''Põhiprogramm ei defineeri funktsiooni `kohalik`.''', 'data_category':'''EQUALS''', 'ignore_case':False}], scope='''main_program''', definition_check_type='''FUNCTION''', scope_function_name=None, scope_class_name=None, definition_check_value='''kohalik''', super_class_name=None, type='''definition_test''', points_weight=1.0, id=1, name='''Põhiprogramm defineerib funktsiooni kohalik''', inputs=None, passed_next=None, failed_next=None, visible_to_user=True)
+print(Results(None))

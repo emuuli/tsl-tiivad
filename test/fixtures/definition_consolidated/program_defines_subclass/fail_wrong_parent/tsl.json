@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "definition_test",
+      "id": 1,
+      "name": "Programm defineerib Loom alamklassi Kutsikas",
+      "scopeType": "PROGRAM",
+      "className": null,
+      "functionName": null,
+      "definitionCheckValue": "Kutsikas",
+      "superClassName": "Loom",
+      "definitionCheckType": "CLASS",
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "Kutsikas"
+        ],
+        "beforeMessage": "Kontrollin, kas programm defineerib klassi `Loom` alamklassi `Kutsikas`.",
+        "passedMessage": "Programm defineerib klassi `Loom` alamklassi `Kutsikas`.",
+        "failedMessage": "Programm ei defineeri klassi `Loom` alamklassi `Kutsikas`."
+      }
+    }
+  ]
+}

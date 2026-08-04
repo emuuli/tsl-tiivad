@@ -1,0 +1,4 @@
+from tiivad import *
+validate_files(['''student.py'''])
+execute_test(file_name='''student.py''', contains_checks=[{'check_type':'''ANY_OF_THESE''', 'nothing_else':None, 'expected_value':['''return'''], 'before_message':'''Kontrollin, kas funktsioon `square` sisaldab return-lauset.''', 'passed_message':'''Funktsioon `square` sisaldab return-lauset.''', 'failed_message':'''Funktsioon `square` ei sisalda return-lauset.''', 'data_category':'''EQUALS''', 'ignore_case':False}], contains_what='''KEYWORD_NO_ARG''', contains_what_arg=None, scope='''function''', scope_class_name=None, scope_function_name='''square''', type='''contains_test''', points_weight=1.0, id=15, name='''Funktsioon sisaldab return-i''', inputs=None, passed_next=None, failed_next=None, visible_to_user=True)
+print(Results(None))

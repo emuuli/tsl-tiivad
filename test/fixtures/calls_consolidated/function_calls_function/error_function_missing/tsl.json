@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "calls_test",
+      "id": 1,
+      "name": "Funktsioon kutsub välja funktsiooni",
+      "scope": "FUNCTION",
+      "targetType": "FUNCTION",
+      "functionName": "outer",
+      "className": null,
+      "targetClassName": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "inner"
+        ],
+        "beforeMessage": "Kontrollin, kas funktsioon `outer` kutsub välja funktsiooni `inner`.",
+        "passedMessage": "Funktsioon `outer` kutsub välja funktsiooni `inner`.",
+        "failedMessage": "Funktsioon `outer` ei kutsu välja funktsiooni `inner`."
+      }
+    }
+  ]
+}

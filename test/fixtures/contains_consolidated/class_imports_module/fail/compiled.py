@@ -1,0 +1,4 @@
+from tiivad import *
+validate_files(['''student.py'''])
+execute_test(file_name='''student.py''', contains_checks=[{'check_type':'''ALL_OF_THESE''', 'nothing_else':None, 'expected_value':['''sys'''], 'before_message':'''Kontrollin, kas klass `Diagnostics` impordib mooduli `sys`.''', 'passed_message':'''Klass `Diagnostics` impordib mooduli `sys`.''', 'failed_message':'''Klass `Diagnostics` ei impordi moodulit `sys`.''', 'data_category':'''EQUALS''', 'ignore_case':False}], contains_what='''KEYWORD_WITH_PRECEDING_ARG''', contains_what_arg='''import''', scope='''class''', scope_class_name='''Diagnostics''', scope_function_name=None, type='''contains_test''', points_weight=1.0, id=9, name='''Klass impordib mooduli sys''', inputs=None, passed_next=None, failed_next=None, visible_to_user=True)
+print(Results(None))

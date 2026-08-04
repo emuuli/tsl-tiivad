@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 4,
+      "name": "Klass kasutab nime",
+      "scope": "CLASS",
+      "containsWhat": "PHRASE",
+      "containsWhatArg": null,
+      "functionName": null,
+      "className": "Person",
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "name"
+        ],
+        "beforeMessage": "Kontrollin, kas klass `Person` kasutab nime atribuuti.",
+        "passedMessage": "Klass `Person` kasutab nime atribuuti.",
+        "failedMessage": "Klass `Person` ei kasuta nime atribuuti."
+      }
+    }
+  ]
+}

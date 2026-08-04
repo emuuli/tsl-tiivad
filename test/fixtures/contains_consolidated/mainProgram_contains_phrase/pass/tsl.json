@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 6,
+      "name": "Põhiprogramm tervitab",
+      "scope": "MAIN_PROGRAM",
+      "containsWhat": "PHRASE",
+      "containsWhatArg": null,
+      "functionName": null,
+      "className": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "Tere"
+        ],
+        "beforeMessage": "Kontrollin, kas põhiprogramm sisaldab sõnet 'Tere'.",
+        "passedMessage": "Põhiprogramm sisaldab sõnet 'Tere'.",
+        "failedMessage": "Põhiprogramm ei sisalda sõnet 'Tere'."
+      }
+    }
+  ]
+}

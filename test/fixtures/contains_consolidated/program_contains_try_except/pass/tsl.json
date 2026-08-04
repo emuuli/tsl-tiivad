@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 13,
+      "name": "Programm sisaldab try/except-i",
+      "scope": "PROGRAM",
+      "containsWhat": "KEYWORD_NO_ARG",
+      "containsWhatArg": null,
+      "functionName": null,
+      "className": null,
+      "genericCheck": {
+        "checkType": "ALL_OF_THESE",
+        "expectedValue": [
+          "try",
+          "except"
+        ],
+        "beforeMessage": "Kontrollin, kas programm sisaldab try/except-i.",
+        "passedMessage": "Programm sisaldab try/except-i.",
+        "failedMessage": "Programm ei sisalda try/except-i."
+      }
+    }
+  ]
+}

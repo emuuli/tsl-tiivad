@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "definition_test",
+      "id": 1,
+      "name": "Klass defineerib Loom alamklassi Koer",
+      "scopeType": "CLASS",
+      "className": "Koer",
+      "functionName": null,
+      "definitionCheckValue": "Koer",
+      "superClassName": "Loom",
+      "definitionCheckType": "CLASS",
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "Koer"
+        ],
+        "beforeMessage": "Kontrollin, kas klass `Koer` defineerib klassi `Loom` alamklassi `Koer`.",
+        "passedMessage": "Klass `Koer` defineerib klassi `Loom` alamklassi `Koer`.",
+        "failedMessage": "Klass `Koer` ei defineeri klassi `Loom` alamklassi `Koer`."
+      }
+    }
+  ]
+}

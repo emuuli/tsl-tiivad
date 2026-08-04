@@ -1,0 +1,30 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 11,
+      "name": "Funktsioon sisaldab tsüklit",
+      "scope": "FUNCTION",
+      "containsWhat": "KEYWORD_NO_ARG",
+      "containsWhatArg": null,
+      "functionName": "sum_list",
+      "className": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "for",
+          "while"
+        ],
+        "beforeMessage": "Kontrollin, kas funktsioon `sum_list` sisaldab tsüklit.",
+        "passedMessage": "Funktsioon `sum_list` sisaldab tsüklit.",
+        "failedMessage": "Funktsioon `sum_list` ei sisalda tsüklit."
+      }
+    }
+  ]
+}

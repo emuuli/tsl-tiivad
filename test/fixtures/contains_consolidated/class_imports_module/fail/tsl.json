@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 9,
+      "name": "Klass impordib mooduli sys",
+      "scope": "CLASS",
+      "containsWhat": "KEYWORD_WITH_PRECEDING_ARG",
+      "containsWhatArg": "import",
+      "functionName": null,
+      "className": "Diagnostics",
+      "genericCheck": {
+        "checkType": "ALL_OF_THESE",
+        "expectedValue": [
+          "sys"
+        ],
+        "beforeMessage": "Kontrollin, kas klass `Diagnostics` impordib mooduli `sys`.",
+        "passedMessage": "Klass `Diagnostics` impordib mooduli `sys`.",
+        "failedMessage": "Klass `Diagnostics` ei impordi moodulit `sys`."
+      }
+    }
+  ]
+}

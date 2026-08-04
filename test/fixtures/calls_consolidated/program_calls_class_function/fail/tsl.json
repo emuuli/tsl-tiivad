@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "calls_test",
+      "id": 1,
+      "name": "Programm kutsub välja klassi funktsiooni",
+      "scope": "PROGRAM",
+      "targetType": "CLASS_FUNCTION",
+      "functionName": null,
+      "className": null,
+      "targetClassName": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "bark"
+        ],
+        "beforeMessage": "Kontrollin, kas programm kutsub välja klassi funktsiooni `bark`.",
+        "passedMessage": "Programm kutsub välja klassi funktsiooni `bark`.",
+        "failedMessage": "Programm ei kutsu välja klassi funktsiooni `bark`."
+      }
+    }
+  ]
+}

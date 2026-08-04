@@ -1,0 +1,4 @@
+from tiivad import *
+validate_files(['''student.py'''])
+execute_test(file_name='''student.py''', contains_checks=[{'check_type':'''ANY_OF_THESE''', 'nothing_else':None, 'expected_value':['''Koer'''], 'before_message':'''Kontrollin, kas põhiprogramm defineerib klassi `Koer`.''', 'passed_message':'''Põhiprogramm defineerib klassi `Koer`.''', 'failed_message':'''Põhiprogramm ei defineeri klassi `Koer`.''', 'data_category':'''EQUALS''', 'ignore_case':False}], scope='''main_program''', definition_check_type='''CLASS''', scope_function_name=None, scope_class_name=None, definition_check_value='''Koer''', super_class_name=None, type='''definition_test''', points_weight=1.0, id=1, name='''Põhiprogramm defineerib klassi Koer''', inputs=None, passed_next=None, failed_next=None, visible_to_user=True)
+print(Results(None))

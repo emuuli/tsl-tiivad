@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "contains_test",
+      "id": 5,
+      "name": "Põhiprogramm sisaldab if-i",
+      "scope": "MAIN_PROGRAM",
+      "containsWhat": "KEYWORD_NO_ARG",
+      "containsWhatArg": null,
+      "functionName": null,
+      "className": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "if"
+        ],
+        "beforeMessage": "Kontrollin, kas põhiprogramm sisaldab if-lauset.",
+        "passedMessage": "Põhiprogramm sisaldab if-lauset.",
+        "failedMessage": "Põhiprogramm ei sisalda if-lauset."
+      }
+    }
+  ]
+}

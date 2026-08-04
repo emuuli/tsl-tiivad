@@ -6,14 +6,12 @@
 
 # Running tests:
 ```
-# All tests
-python -m pytest
-# For one file
-python -m pytest test/test_file.py
+python test\test_all.py              # kõik, paralleelselt
+python test\test_all.py -k calls     # filtreeri nime järgi
 ```
 
 # Packaging:
-* Remove the old versions from `dist` folder.
+* Be in the repo root folder: `Remove-Item dist,tiivad.egg-info -Recurse -Force`   # egg-info matters, not just dist
 * Change the version in `tiivad/version.py` and run:
 ```
 python setup.py sdist
@@ -34,7 +32,7 @@ https://pypi.org/project/tiivad/
 ## Update the tiivad-base version in tiivad-base file
 ```
 # File to change in: tsl-tiivad/docker/tiivad-base
-RUN pip3 install --no-cache-dir tiivad==0.0.30[requirements.txt](..%2F..%2FDesktop%2FEerik%2Ftsl-tiivad%2Frequirements.txt)
+RUN pip3 install --no-cache-dir tiivad==0.0.33[requirements.txt](..%2F..%2FDesktop%2FEerik%2Ftsl-tiivad%2Frequirements.txt)
 ```
 
 ## Let's rename the image with -t .

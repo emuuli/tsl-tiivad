@@ -1,0 +1,26 @@
+{
+  "producer": "<producer>",
+  "result_type": "OK_V3",
+  "finished_at": "<finished_at>",
+  "pre_evaluate_error": null,
+  "points": 100,
+  "tests": [
+    {
+      "title": "Programm impordib mooduli math",
+      "user_inputs": [],
+      "created_files": [],
+      "converted_submission": null,
+      "actual_output": null,
+      "actual_file_output": null,
+      "exception_message": null,
+      "status": "PASS",
+      "checks": [
+        {
+          "title": "Kontrollin, kas programm impordib mooduli `math`.",
+          "status": "PASS",
+          "feedback": "Programm impordib mooduli `math`."
+        }
+      ]
+    }
+  ]
+}

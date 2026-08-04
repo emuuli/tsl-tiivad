@@ -1,0 +1,29 @@
+{
+  "language": "python3",
+  "validateFiles": true,
+  "requiredFiles": [
+    "student.py"
+  ],
+  "tslVersion": "1.0.0",
+  "tests": [
+    {
+      "type": "calls_test",
+      "id": 1,
+      "name": "Funktsioon kutsub välja klassi funktsiooni",
+      "scope": "FUNCTION",
+      "targetType": "CLASS_FUNCTION",
+      "functionName": "walk",
+      "className": null,
+      "targetClassName": null,
+      "genericCheck": {
+        "checkType": "ANY_OF_THESE",
+        "expectedValue": [
+          "bark"
+        ],
+        "beforeMessage": "Kontrollin, kas funktsioon `walk` kutsub välja klassi funktsiooni `bark`.",
+        "passedMessage": "Funktsioon `walk` kutsub välja klassi funktsiooni `bark`.",
+        "failedMessage": "Funktsioon `walk` ei kutsu välja klassi funktsiooni `bark`."
+      }
+    }
+  ]
+}

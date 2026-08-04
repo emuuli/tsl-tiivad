@@ -1,5 +1,40 @@
 import ast
+import keyword
 import re
+
+
+KEYWORD_TO_AST_NODES = {
+    'for':       {'For', 'AsyncFor', 'comprehension'},
+    'while':     {'While'},
+    'if':        {'If', 'IfExp'},
+    'try':       {'Try'},
+    'except':    {'ExceptHandler'},
+    'def':       {'FunctionDef', 'AsyncFunctionDef'},
+    'class':     {'ClassDef'},
+    'return':    {'Return'},
+    'yield':     {'Yield', 'YieldFrom'},
+    'import':    {'Import', 'ImportFrom'},
+    'from':      {'ImportFrom'},
+    'with':      {'With', 'AsyncWith'},
+    'lambda':    {'Lambda'},
+    'pass':      {'Pass'},
+    'break':     {'Break'},
+    'continue':  {'Continue'},
+    'raise':     {'Raise'},
+    'assert':    {'Assert'},
+    'global':    {'Global'},
+    'nonlocal':  {'Nonlocal'},
+    'await':     {'Await'},
+    'del':       {'Delete'},
+    'async':     {'AsyncFor', 'AsyncWith', 'AsyncFunctionDef'},
+}
+
+AST_NODE_TO_KEYWORDS = {}
+for _kw, _nodes in KEYWORD_TO_AST_NODES.items():
+    for _n in _nodes:
+        AST_NODE_TO_KEYWORDS.setdefault(_n, set()).add(_kw)
+
+PYTHON_KEYWORDS = set(keyword.kwlist)
 
 
 class ValidationType:
@@ -15,8 +50,15 @@ class ProgramSyntaxTreeAnalyzer:
 
         self.imports_module_names, self.defines_function_names = set(), set()
         self.defines_class_names, self.defines_subclass_names = set(), set()
+        # Filled by the caller (handler.run_definition_test) when a
+        # definition_test carries super_class_name: the subset of classes in
+        # scope that inherit from that one specific parent. Held as a plain
+        # attribute so analyze_with_quantifier can expose it like any other
+        # target set, instead of the quantifier logic being duplicated there.
+        self.defines_subclass_of = set()
         self.calls_function_names, self.calls_class_function_names = set(), set()
         self.contains_keyword_names, self.defined_vars = set(), set()
+        self.contains_keyword_ast_names, self.contains_keyword_used = set(), set()
         self.contains_loop_tv = self.contains_try_except_tv = self.contains_return_tv = False
         self.is_class_tv = self.is_function_tv = self.is_pure_tv = False
         self.parent_classes, self.sub_classes = set(), set()
@@ -36,12 +78,57 @@ class ProgramSyntaxTreeAnalyzer:
                 self.treeWhole = None
                 self.tree = None
                 self.exception = e
-    	        
-        if isMain:
-             self.extract_main_program()
-             for node in ast.walk(self.treeWhole):
+
+        # Every class name defined anywhere in the file, regardless of the scope
+        # this analyzer is narrowed to. Deliberately separate from
+        # defines_class_names, because the two answer different questions:
+        #   defines_class_names -> "which classes does THIS scope define?"
+        #                          (must stay narrow; drives definition_test)
+        #   all_class_names     -> "which names in this file are classes?"
+        #                          (must be whole-file; only used to tell a
+        #                           class instantiation apart from a plain
+        #                           function call, since `Auto()` and `arvuta()`
+        #                           are the same ast.Call shape)
+        # Populated before traverse_nodes so calls_class does not depend on
+        # whether the ClassDef happens to be visited before the call site.
+        self.all_class_names = set()
+        if self.treeWhole is not None:
+            for node in ast.walk(self.treeWhole):
                 if isinstance(node, ast.ClassDef):
-                    self.defines_class_names.add(node.name)
+                    self.all_class_names.add(node.name)
+
+        if isMain:
+            self.extract_main_program()
+            # NB: do NOT re-populate defines_class_names from treeWhole here.
+            #
+            # Commit e11de31 ("uuendused", 2025-03-06) added exactly that loop:
+            #     for node in ast.walk(self.treeWhole):
+            #         if isinstance(node, ast.ClassDef):
+            #             self.defines_class_names.add(node.name)
+            # It was NOT meant to widen the main-program scope. The same commit
+            # introduced calls_class, whose Call branch originally read
+            #     if x.func.id in self.defines_class_names
+            # and extract_main_program had just stripped every top-level
+            # ClassDef out of self.tree, so that set would have been empty and
+            # `Auto()` unrecognisable as an instantiation. The loop was a prop
+            # for calls_class; widening defines_class_names was collateral.
+            #
+            # That prop is gone: calls_class now reads all_class_names (built
+            # above from treeWhole for precisely this purpose), so the loop had
+            # no remaining job. Keeping it caused two contradictory bugs:
+            #   - mainProgram + CLASS reported classes defined at module level
+            #     as "defined by the main program" (false positive), making
+            #     MAIN_PROGRAM scope indistinguishable from PROGRAM scope;
+            #   - mainProgram + CLASS + superClassName said the opposite on the
+            #     very same file, because defines_subclass_names was never
+            #     pre-populated and stayed correctly narrow.
+            #
+            # Both scopes now answer from the main-program body alone.
+            #
+            # Side note: creates_instance() (defines_class_names &
+            # calls_function_names) is now empty in main-program scope. It is
+            # unreachable - no test type dispatches to it - but if it is ever
+            # revived it should read all_class_names, exactly like calls_class.
         else:
             for node_type, name in [(ast.ClassDef, class_name), (ast.FunctionDef, function_name)]:
                 if self.tree is not None and name is not None:
@@ -56,6 +143,13 @@ class ProgramSyntaxTreeAnalyzer:
         self.contains_keyword_names = set(re.findall(r'\w+', ast.unparse(self.tree)))
         self.contains_phrases = set(match[1] if match[1] else match[2] for match in re.findall(r'(["\'])([^\1]+?)\1|(\w+)', ast.unparse(self.tree)))
         self.traverse_nodes(self.tree)
+        for kw in PYTHON_KEYWORDS:
+            if kw in KEYWORD_TO_AST_NODES:
+                if kw in self.contains_keyword_ast_names:
+                    self.contains_keyword_used.add(kw)
+            else:
+                if kw in self.contains_keyword_names:
+                    self.contains_keyword_used.add(kw)
 
     def raised_exception(self) -> bool:
             return self.exception is not None
@@ -86,7 +180,7 @@ class ProgramSyntaxTreeAnalyzer:
             if isinstance(x.func, ast.Name):
                 self.calls_function_names.add(x.func.id)
                 self.defined_vars.add(x.func.id)
-                if x.func.id in self.defines_class_names:
+                if x.func.id in self.all_class_names:
                     self.calls_class.add(x.func.id)
             elif isinstance(x.func, ast.Attribute):
                 self.calls_function_names.add(x.func.attr)
@@ -102,6 +196,8 @@ class ProgramSyntaxTreeAnalyzer:
                 self.is_pure_tv = False
         elif node_type == 'Return':
             self.contains_return_tv = True
+        if node_type in AST_NODE_TO_KEYWORDS:
+            self.contains_keyword_ast_names |= AST_NODE_TO_KEYWORDS[node_type]
         for y in ast.iter_child_nodes(x):
             self.traverse_nodes(y)
 
@@ -167,6 +263,8 @@ class ProgramSyntaxTreeAnalyzer:
                 targetset = self.contains_phrases
             case 'defines_class':
                 targetset = self.defines_class_names
+            case 'defines_subclass':
+                targetset = self.defines_subclass_of
             case 'calls_class':
                 targetset = self.calls_class
             case 'is_subclass':
@@ -177,6 +275,8 @@ class ProgramSyntaxTreeAnalyzer:
                 targetset = self.defines_class_names & self.calls_function_names
             case 'calls_class_function':
                 targetset = self.calls_class_function_names
+            case 'contains_keyword_used':
+                targetset = self.contains_keyword_used
             case _:
                 return False
         self.actual = targetset
@@ -203,7 +303,22 @@ class ClassSyntaxTreeAnalyzer(ProgramSyntaxTreeAnalyzer):
         self.class_name = class_name
         if self.exception is not None:
             return
-        self.calls_function_names = set()
+        # NB: do NOT reset calls_function_names here.
+        #
+        # Commit ead7160 ("fixes", 2025-02-08) inserted
+        #     self.calls_function_names = set()
+        # on this line as collateral damage while renaming
+        # defines_subclass -> is_subclass. The same commit also left a stray
+        # print(target) behind, so it was not a deliberate design choice.
+        #
+        # The effect was that a class could never be seen calling ANY function:
+        # super().__init__() collects the calls, and this line threw them away
+        # immediately afterwards. class_calls_function_test was therefore
+        # unconditionally FAIL, and creates_instance (defines_class_names &
+        # calls_function_names) was unconditionally empty in class scope.
+        #
+        # Method calls remain distinguishable via calls_class_function_names,
+        # which traverse_nodes fills separately for ast.Attribute calls.
         self.get_parentClasses(class_name)
         self.get_subClasses(class_name)
 
